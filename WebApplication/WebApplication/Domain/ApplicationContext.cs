@@ -16,7 +16,7 @@ namespace WebApplication.Domain
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration["ConnectionStrings:Default"]);
+            optionsBuilder.UseNpgsql(_configuration["ConnectionStrings:DuckDuckCodeConn"]);
         }
     }
 }

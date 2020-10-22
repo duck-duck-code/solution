@@ -10,6 +10,8 @@ namespace WebApplication
         {
             CreateMap<UserCreateDto, User>();
             CreateMap<User, UserInfoDto>();
+            CreateMap<RecordCreateDto, Record>();
+            CreateMap<Record, RecordInfoDto>();
         }
     }
 }
