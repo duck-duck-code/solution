@@ -7,7 +7,7 @@ namespace WebApplication.Domain
     {
         private readonly IConfiguration _configuration;
         public DbSet<User> Users { get; set; }
-        public DbSet<Record> Records { get; set; }
+        public DbSet<HistoryRecord> HistoryRecords { get; set; }
 
         public ApplicationContext(IConfiguration configuration)
         {
