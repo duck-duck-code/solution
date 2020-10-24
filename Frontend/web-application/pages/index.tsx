@@ -1,3 +1,7 @@
+import { Button, useColorMode } from "@chakra-ui/core";
+
 export default function Home() {
-  return <h1>Web Application</h1>;
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  return <Button onClick={toggleColorMode}>Change mode</Button>;
 }

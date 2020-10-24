@@ -15,5 +15,13 @@ export default class Controller {
     }
   }
 
-  protected async get(): Promise<void> {}
+  protected async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    try {
+      const res = await axious.get(url, config);
+
+      return res.data as T;
+    } catch (err) {
+      throw (err as AxiosError).response;
+    }
+  }
 }
