@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,12 +12,20 @@ using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using WebApplication.Domain;
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using WebApplication.Auth;
 
 namespace WebApplication
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(logging =>
@@ -72,6 +81,12 @@ namespace WebApplication
             services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>();
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<AccessTokenProvider>();
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowAll", builder =>
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -79,6 +94,7 @@ namespace WebApplication
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors("AllowAll");
             }
 
             app.UseOpenApi();
@@ -95,6 +111,13 @@ namespace WebApplication
                 endpoints.MapGet("{**any}", async context =>
                 {
                     Console.WriteLine($"Use static ${context.Request.Path.Value}");
+                    var path = context.Request.Path.Value;
+                    // path = path.EndsWith("/") ? path.Substring(0, path.Length - 1) : path;
+                    var url = $"{Configuration["S3Bucket"]}{path}";
+                    var client = new HttpClient();
+                    var responseMessage = await client.GetAsync(url);
+                    context.Response.StatusCode = (int) responseMessage.StatusCode;
+                    await responseMessage.Content.CopyToAsync(context.Response.Body);
                 });
             });
         }

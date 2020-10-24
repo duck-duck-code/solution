@@ -31,15 +31,25 @@ namespace WebApplication.Controllers
         [HttpPost("categories")]
         public async Task<IActionResult> Search([FromBody] SearchDto searchDto)
         {
+            var record = new HistoryRecord
+            {
+                Identity = searchDto.Identity,
+                SearchValue = searchDto.Search
+            };
+            await _context.HistoryRecords.AddAsync(record);
+            await _context.SaveChangesAsync();
+            
             var fields = new List<string>
             {
                 "items.point"
             };
+            
             var urlParams = new Dictionary<string, string>
             {
                 {"q", HttpUtility.UrlEncode(searchDto.Search)},
                 {"sort_point", $"{searchDto.Long.ToString(NumberFormatInfo.InvariantInfo)},{searchDto.Lat.ToString(NumberFormatInfo.InvariantInfo)}"},
                 {"fields", string.Join(",", fields)},
+                {"type", "branch"},
                 {"key", _gisApiKey}
             };
 
