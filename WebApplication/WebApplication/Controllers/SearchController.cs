@@ -49,6 +49,7 @@ namespace WebApplication.Controllers
                 {"q", HttpUtility.UrlEncode(searchDto.Search)},
                 {"sort_point", $"{searchDto.Long.ToString(NumberFormatInfo.InvariantInfo)},{searchDto.Lat.ToString(NumberFormatInfo.InvariantInfo)}"},
                 {"fields", string.Join(",", fields)},
+                {"type", "branch"},
                 {"key", _gisApiKey}
             };
 
