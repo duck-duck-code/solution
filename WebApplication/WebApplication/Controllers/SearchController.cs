@@ -99,7 +99,12 @@ namespace WebApplication.Controllers
                     return r;
                 })
                 .SelectMany(r => r.Result?.Items ?? new Item[0])
-                .Where(i => InFavourites(i.Name, favNames));
+                .Select(i =>
+                {
+                    if (InFavourites(i.Name, favNames))
+                        i.IsFavourite = true;
+                    return i;
+                });
             
             return Ok(new
             {
