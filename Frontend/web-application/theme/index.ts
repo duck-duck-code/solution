@@ -14,7 +14,9 @@ export const customTheme = extendTheme({
       pomegranate: "#FF3A33",
       sakura: "#F89ABA",
       balley: "#75842F",
-      forest: "#53CC60"
+      forest: "#53CC60",
+      graphiteBlue: "#2D3139",
+      graphiteBlack: "#27292D",
     },
   },
 });

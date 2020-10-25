@@ -10,14 +10,10 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <Head>
-            <title>Web Application</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-            <meta charSet="utf-8" />
-          </Head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />
