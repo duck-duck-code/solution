@@ -1,11 +1,13 @@
 import React from "react";
 import Layout from "../components/Layout";
-import { Text } from "@chakra-ui/core";
+import { Heading, Text } from "@chakra-ui/core";
 
 export default function ShopList() {
   return (
     <Layout>
-      <Text>Recently watched</Text>
+      <Heading pt={4} px="100px" size="md">
+        Coming soon...
+      </Heading>
     </Layout>
   );
 }

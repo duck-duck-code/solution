@@ -44,9 +44,7 @@ export default function Home() {
         long: pos.coords.longitude,
       });
 
-      if (res.result?.result) {
-        dispatch(setPoints(res.result.result?.items || []));
-      }
+      dispatch(setPoints(res.result.items || []));
     });
   };
 
@@ -68,17 +66,6 @@ export default function Home() {
             zIndex="-1"
           />
         )}
-
-        <Box
-          position="absolute"
-          w={["0", "0", "500px"]}
-          h={["0", "0", "100vh"]}
-          bg={
-            colorMode === "light" ? "rgb(255,255,255,0.85)" : "rgb(0,0,0,0.85)"
-          }
-          color={colorMode === "light" ? "primary.black" : "primary.white"}
-          zIndex="-1"
-        />
 
         <Box position="absolute" w={["100%", "100%", "500px"]} p={[2, 4, 6]}>
           <InputGroup

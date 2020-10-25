@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import uuid from "react-uuid";
 import DG from "2gis-maps";
 import { Box, BoxProps, Center, Text } from "@chakra-ui/core";
 import { AppState } from "../state/reducers";
 import { GeoState } from "../state/reducers/geo";
-import uuid from "react-uuid";
 import { setMode } from "../state/actions/site";
 
 if (window && !localStorage.getItem("id")) {
@@ -49,16 +49,31 @@ export default function Map(props: BoxProps) {
             .bindPopup("Ваше местоположение");
         }
 
+        const favouriteIcon = DG.icon({
+          iconUrl:
+            "https://duck-duck-code.s3.eu-central-1.amazonaws.com/icons/duckfavholder.svg",
+          iconSize: [35, 52],
+          iconAnchor: [17, 52],
+        });
+
         if (markersToRemove) {
           markersToRemove.removeFrom(map);
         }
 
         const markers = DG.featureGroup();
-        geo.points.forEach((point) => {
-          if (point?.point?.lat && point?.point?.lon) {
-            DG.marker([point.point.lat, point.point.lon])
-              .addTo(markers)
-              .bindPopup(point.name);
+        geo.points.forEach((data) => {
+          if (data?.point?.lat && data?.point?.lon) {
+            if (data.isFavourite) {
+              DG.marker([data.point.lat, data.point.lon], {
+                icon: favouriteIcon,
+              })
+                .addTo(markers)
+                .bindPopup(data.name);
+            } else {
+              DG.marker([data.point.lat, data.point.lon])
+                .addTo(markers)
+                .bindPopup(data.name);
+            }
           }
         });
         if (geo.points.length > 0) {

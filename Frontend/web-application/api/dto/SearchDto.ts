@@ -7,24 +7,16 @@ export interface SearchDto {
 
 export interface SearchResponse {
   result: {
-    meta: {
-      api_version: string | number;
-      code: number;
-      issue_date: string;
-    };
-    result: {
-      items: [PointData];
-    };
+    items: [PointData];
   };
 }
 
 export interface PointData {
+  isFavourite: boolean;
   address_name: string;
-  id: string | number;
   name: string;
   point: {
     lat: number;
     lon: number;
   };
-  type: string;
 }
