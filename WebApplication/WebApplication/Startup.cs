@@ -32,7 +32,7 @@ namespace WebApplication
             {
                 logging.AddConsole();
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

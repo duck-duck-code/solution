@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -6,9 +7,13 @@ using WebApplication.DTOs;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Web;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace WebApplication.Controllers
 {
@@ -52,16 +57,51 @@ namespace WebApplication.Controllers
                 {"type", "branch"},
                 {"key", _gisApiKey}
             };
+            var client = new HttpClient();
 
+            var responses = new List<HttpResponseMessage>();
+            for (var p = 1; p <= 5; p++)
+            {
+                var responseMessage = await FetchPage(client, urlParams, p);
+                if (responseMessage.StatusCode != HttpStatusCode.OK)
+                    break;
+                responses.Add(responseMessage);
+            }
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            };
+            
+            var favNames = await _context.FavouriteShops
+                .Where(f => f.Identity == searchDto.Identity)
+                .Select(f => f.ShopName)
+                .ToListAsync();
+            
+            var items = responses
+                .Select(r => r.Content.ReadAsStringAsync().Result)
+                .Select(s => JsonConvert.DeserializeObject<ResponseDto>(s, new JsonSerializerSettings
+                    {
+                        ContractResolver = contractResolver
+                    })
+                )
+                .SelectMany(r => r.Result.Items)
+                .Where(i => InFavourites(i.Name, favNames));
+
+            return Ok(items);
+        }
+
+        private bool InFavourites(string name, List<string> favNames)
+        {
+            return favNames.Any(f => name.Contains(f, StringComparison.OrdinalIgnoreCase));
+        }
+        
+        private async Task<HttpResponseMessage> FetchPage(HttpClient client, Dictionary<string, string> urlParams, int pageNum)
+        {
+            urlParams["page"] = pageNum.ToString();
             var queryString = string.Join("&", urlParams.Select(e => $"{e.Key}={e.Value}"));
             var requestUrl = $"{_baseUrl}?{queryString}";
-            var client = new HttpClient();
-            var responseMessage = await client.GetAsync(requestUrl);
-            var body = await responseMessage.Content.ReadAsStreamAsync();
-
-            return StatusCode(
-                (int) responseMessage.StatusCode,
-                JsonSerializer.DeserializeAsync<JsonElement>(body));
+            
+            return await client.GetAsync(requestUrl);
         }
     }
 }
