@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "api",
     "web-application"
   ],
   "scripts": {
     "dev": "yarn workspace web-application next dev",
-    "build": "yarn workspace web-application next build",
+    "build": "yarn workspace web-application next build && yarn workspace web-application next export",
     "start": "yarn workspace web-application next start"
   }
 }
