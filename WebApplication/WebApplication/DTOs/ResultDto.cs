@@ -19,5 +19,6 @@ namespace WebApplication.DTOs
         public string AddressName { get; set; }
         public string Name { get; set; }
         public JObject Point { get; set; }
+        public bool IsFavourite { get; set; }
     }
 }
